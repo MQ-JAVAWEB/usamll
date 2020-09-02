@@ -5,8 +5,8 @@
       :visible.sync="info.isShow"
       
     >
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="上级分类">
+      <el-form :model="form" label-width="80px" :rules="rules">
+        <el-form-item label="上级分类" prop="pid">
           <el-select
             v-model="form.pid"
             placeholder="--请选择--"
@@ -21,7 +21,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分类名称">
+        <el-form-item label="分类名称" prop="catename">
           <el-input v-model="form.catename"></el-input>
         </el-form-item>
         <el-form-item label="图片" v-if="form.pid !=0">
@@ -84,7 +84,15 @@ export default {
         img:"",
         status: 1
       },
-      imgUrl: ""
+      imgUrl: "",
+      rules:{
+        catename:[
+          { required: true, message: '请输入分类名称', trigger: 'blur' }
+        ],
+        pid:[
+          { required: true, message: '请选择上级分类', trigger: 'change' }
+        ]
+      }
     }
   },
   computed:{
@@ -121,6 +129,14 @@ export default {
     },
     // 添加
     addCate(){
+      if(this.form.catename == ''){
+        warningAlert('请填写分类名称')
+        return
+      }
+      if(this.form.pid == ''){
+        warningAlert('请选择上级分类')
+        return
+      } 
       requestAddCate(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('添加成功');
@@ -142,6 +158,14 @@ export default {
     },
     // 修改
     updateCate(){
+      if(this.form.catename == ''){
+        warningAlert('请填写分类名称')
+        return
+      }
+      if(this.form.pid == ''){
+        warningAlert('请选择上级分类')
+        return
+      } 
       requestUpdateCate(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('修改成功');

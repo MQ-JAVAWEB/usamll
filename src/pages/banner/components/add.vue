@@ -5,9 +5,9 @@
       :visible.sync="info.isShow"
       
     >
-      <el-form :model="form" label-width="80px">
+      <el-form :model="form" label-width="80px" :rules="rules">
         
-        <el-form-item label="标题">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-form-item label="图片" >
@@ -70,7 +70,12 @@ export default {
         img:"",
         status: 1
       },
-      imgUrl: ""
+      imgUrl: "",
+      rules:{
+        title:[
+          { required: true, message: '请输入轮播图标题', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed:{
@@ -107,6 +112,10 @@ export default {
     },
     // 添加
     addCate(){
+      if(this.form.title == ''){
+        warningAlert('请填写轮播图标题')
+        return
+      }
       requestAddBanner(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('添加成功');
@@ -128,6 +137,10 @@ export default {
     },
     // 修改
     updateCate(){
+      if(this.form.title == ''){
+        warningAlert('请填写轮播图标题')
+        return
+      }
       requestUpdateBanner(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('修改成功');

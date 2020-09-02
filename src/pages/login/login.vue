@@ -2,8 +2,15 @@
   <div class="warp">
     <div class="con">
       <h2>登录</h2>
-      <el-input v-model="user.username" placeholder="请输入用户名" clearable></el-input>
-      <el-input v-model="user.password" placeholder="请输入密码" show-password clearable></el-input>
+      <el-form :rules="rules" :model="user">
+        <el-form-item prop="username">
+          <el-input v-model="user.username" placeholder="请输入用户名" clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="user.password" placeholder="请输入密码" show-password clearable></el-input>
+        </el-form-item>
+
+      </el-form>
       <div class="login_btn">
         <el-button type="primary" @click="login">登录</el-button>
       </div>
@@ -24,7 +31,15 @@ export default {
       user:{
         username:"",
         password:""
-      }
+      },
+      rules: {
+          username: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' }
+          ]
+        }
     }
   },
   computed:{
@@ -35,6 +50,16 @@ export default {
       loginAction:"login/loginAction"
     }),
     login(){
+      if(this.user.username==''){
+        warningAlert('请填写用户名')
+        return
+      }
+      if(this.user.password==''){
+        warningAlert('请填写密码')
+        return
+      }
+
+
       requestLogin(this.user).then(res=>{
         if(res.data.code==200){
           successAlert("登录成功")
@@ -73,9 +98,7 @@ h2 {
   text-align: center;
   line-height: 60px;
 }
-.el-input {
-  margin-bottom: 15px;
-}
+
 .login_btn {
   text-align: center;
 }

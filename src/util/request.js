@@ -454,3 +454,49 @@ export const requestDelGoods=(id)=>{
 }
 
 // ==========================商品管理结束==================================
+
+// ==========================菜单管理开始==================================
+// 添加 
+export const requestAddSeck=(form)=>{
+  return axios({
+    url:baseUrl+"/api/seckadd",
+    method:"post",
+    data:qs.stringify(form)
+  })
+}
+// 显示列表 
+export const requestSeckList=(istree)=>{
+  return axios({
+    url:baseUrl+"/api/secklist",
+    method:'get',
+    params:istree
+  })
+}
+// 请求一条数据 
+export const requestSeckListOne=(id)=>{
+  return axios({
+    url:baseUrl+"/api/seckinfo",
+    method:"get",
+    params:{
+      id
+    }
+  })
+}
+// 修改 
+export const requestUpdateSeck=(form)=>{
+  return axios({
+    url:baseUrl+"/api/seckedit",
+    method:"post",
+    data:qs.stringify(form)
+  })
+}
+// 删除  
+export const requestDelSeck=(id)=>{
+  return axios({
+    url:baseUrl+"/api/seckdelete",
+    method:"post",
+    data:qs.stringify(id)
+  })
+}
+
+// ==========================菜单管理结束==================================

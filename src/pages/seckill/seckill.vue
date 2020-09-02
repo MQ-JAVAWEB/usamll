@@ -2,7 +2,7 @@
   <div>
     <el-button type="primary" @click="add">添加</el-button>
     <v-list @edit="edit"></v-list>
-    <v-add :info = "info" ref="goods"></v-add>
+    <v-add :info = "info" ref="seckill"></v-add>
   </div>
 </template>
 <script>
@@ -36,7 +36,7 @@ export default {
         isShow:true,
         isAdd:false
       }
-      this.$refs.goods.reqGoodsOne(id)
+      this.$refs.seckill.reqSeckillOne(id)
     }
   },
   mounted() {

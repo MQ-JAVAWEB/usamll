@@ -9,9 +9,10 @@
       <el-form
         :model="form"
         label-width="80px"
+        :rules="rules"
       >
         
-        <el-form-item label="规格编号">
+        <el-form-item label="规格名称" prop="specsname">
           <el-input v-model="form.specsname"></el-input>
         </el-form-item>
         <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index">
@@ -76,6 +77,11 @@ export default {
         specsname:"",
         attrs: "",
         status: 1
+      },
+      rules:{
+        specsname:[
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
+        ]
       }
 
 
@@ -110,6 +116,10 @@ export default {
     },
     // 添加
     addSpecs() {
+      if(this.form.specsname == ''){
+        warningAlert('请填写规格名称')
+        return
+      }
       this.form.attrs = JSON.stringify(this.attrArr.map(item=>item.value))
       requestAddSpecs(this.form).then(res=>{
         if(res.data.code==200){

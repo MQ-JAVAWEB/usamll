@@ -122,7 +122,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { requestDelCate, requestDelBanner } from '../../../util/request'
+import { requestDelCate, requestDelBanner, requestDelGoods } from '../../../util/request'
 import { successAlert, warningAlert } from '../../../util/alert'
 export default {
   components: {
@@ -146,17 +146,19 @@ export default {
     },
     ...mapActions({
        goodsListAction:"goods/goodsListAction",
-       getSpecsTotalAction:"goods/getSpecsTotalAction",
+       getGoodsTotalAction:"goods/getGoodsTotalAction",
+       goodsPageActions:"goods/goodsPageActions",
        goodsPageActions:"goods/goodsPageActions"
     }),
     edit(id){
       this.$emit('edit',id)
     },
     del(id){
-      requestDelBanner({id}).then(res=>{
+      requestDelGoods({id}).then(res=>{
         if(res.data.code==200){
           successAlert('删除成功');
-          this.goodsListAction()
+          this.goodsPageActions(1)
+          this.getGoodsTotalAction()
         }else {
           warningAlert(res.data.msg)
         }
@@ -165,7 +167,7 @@ export default {
   },
   mounted() {
     this.goodsListAction()
-    this.getSpecsTotalAction()
+    this.getGoodsTotalAction()
 
   }
 }

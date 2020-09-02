@@ -9,8 +9,9 @@
       <el-form
         :model="form"
         label-width="80px"
+        :rules="rules"
       >
-        <el-form-item label="所属角色">
+        <el-form-item label="所属角色" prop="roleid">
           <el-select v-model="form.roleid" placeholder="请选择所属角色">
             <el-option
               value="0"
@@ -22,7 +23,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户名">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item label="密码">
@@ -78,6 +79,14 @@ export default {
         username: "",
         password:"",
         status: 1
+      },
+      rules:{
+        roleid:[
+          { required: true, message: '请选择所属角色', trigger: 'change' }
+        ],
+        username:[
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ]
       }
 
 
@@ -109,6 +118,14 @@ export default {
     },
     // 添加角色
     addUser() {
+      if(this.form.roleid == ''){
+        warningAlert('请选择所属角色')
+        return
+      }
+      if(this.form.username == ''){
+        warningAlert('请填写用户名')
+        return
+      }
       requestAddUser(this.form).then(res => {
         if (res.data.code === 200) {
           successAlert('添加成功')
@@ -130,7 +147,14 @@ export default {
     },
     // 更新
     updateUser() {
-      
+      if(this.form.roleid == ''){
+        warningAlert('请选择所属角色')
+        return
+      }
+      if(this.form.username == ''){
+        warningAlert('请填写用户名')
+        return
+      }
       requestUpdateUser(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('修改成功')

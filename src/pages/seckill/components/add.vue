@@ -4,12 +4,26 @@
       :title="info.title"
       :visible.sync="info.isShow"
       @closed="colse"
-      @opened="createEditer"
     >
       <el-form
         :model="form"
         label-width="80px"
+        :rules="rules"
       >
+
+        <el-form-item label="活动名称" prop="title">
+          <el-input v-model="form.title"></el-input>
+        </el-form-item>
+        <el-form-item label="活动期限">
+          <el-date-picker
+            v-model="timeValue"
+            type="datetimerange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="timestamp"
+          >
+          </el-date-picker>
+        </el-form-item>
 
         <el-form-item label="一级分类">
           <el-select
@@ -33,6 +47,7 @@
           <el-select
             v-model="form.second_cateid"
             placeholder="请选择所属角色"
+            @change="changeSecondId"
           >
             <el-option
               value=""
@@ -47,35 +62,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品名称">
-          <el-input v-model="form.goodsname"></el-input>
-        </el-form-item>
-        <el-form-item label="价格">
-          <el-input v-model="form.price"></el-input>
-        </el-form-item>
-        <el-form-item label="市场价格">
-          <el-input v-model="form.market_price"></el-input>
-        </el-form-item>
-        <el-form-item label="图片">
-          <div class="upload">
-            <h3 class="upload-add">+</h3>
-            <img
-              :src="imgUrl"
-              class="upload-img"
-            >
-            <input
-              type="file"
-              class="upload-file"
-              @change="upload"
-            >
-          </div>
-        </el-form-item>
-
-        <el-form-item label="商品规格">
+        <el-form-item label="商品">
           <el-select
-            v-model="form.specsid"
+            v-model="form.goodsid"
             placeholder="请选择所属角色"
-            @change="changeSpecsId"
           >
             <el-option
               value=""
@@ -83,52 +73,13 @@
               disabled
             ></el-option>
             <el-option
-              v-for="item in specsList"
+              v-for="item in goods"
               :key="item.id"
               :value="item.id"
-              :label="item.specsname"
+              :label="item.goodsname"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品属性">
-          <el-select
-            v-model="form.specsattr"
-            multiple
-          >
-            <el-option
-              value=""
-              label="--请选择--"
-              disabled
-            ></el-option>
-            <el-option
-              v-for="item in specsAttrList"
-              :key="item"
-              :value="item"
-              :label="item"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否新品">
-          <el-radio
-            v-model="form.isnew"
-            :label="1"
-          >是</el-radio>
-          <el-radio
-            v-model="form.isnew"
-            :label="2"
-          >否</el-radio>
-        </el-form-item>
-        <el-form-item label="是否热卖">
-          <el-radio
-            v-model="form.ishot"
-            :label="1"
-          >是</el-radio>
-          <el-radio
-            v-model="form.ishot"
-            :label="2"
-          >否</el-radio>
-        </el-form-item>
-
         <el-form-item label="状态">
           <el-switch
             v-model="form.status"
@@ -137,20 +88,7 @@
           >
           </el-switch>
         </el-form-item>
-        <el-form-item label="商品描述">
-          
-            <div
-              id="editor"
-              v-if="info.isShow"
-            >
-
-            </div>
-          
-
-        </el-form-item>
-
       </el-form>
-
       <div
         slot="footer"
         class="dialog-footer"
@@ -158,12 +96,12 @@
         <el-button @click="info.isShow = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="addGoods"
+          @click="addSeckill"
           v-if="info.isAdd"
         >添 加</el-button>
         <el-button
           type="primary"
-          @click="updateGoods"
+          @click="updateSeckill"
           v-else
         >修 改</el-button>
       </div>
@@ -173,9 +111,8 @@
 </template>
 <script>
 import { successAlert, warningAlert } from '../../../util/alert';
-import { requestAddBanner, requestUpdateBanner, requestBannerListOne, requestAddGoods, requestGoodsListOne, requestUpdateGoods } from '../../../util/request';
+import { requestAddBanner, requestUpdateBanner, requestBannerListOne, requestAddGoods, requestGoodsListOne, requestUpdateGoods, requestAddSeck, requestSeckListOne, requestUpdateSeck } from '../../../util/request';
 import { mapGetters, mapActions } from 'vuex';
-import E from "wangeditor"
 export default {
   props: ['info'],
   components: {
@@ -183,29 +120,37 @@ export default {
   data() {
     return {
       form: {
+        title: "",
+        begintime: "",
+        endtime: "",
         first_cateid: "",
         second_cateid: "",
-        goodsname: "",
-        price: "",
-        market_price: "",
-        img: "",
-        description: "",
-        specsid: "",
-        specsattr: [],
-        isnew: 1,
-        ishot: 1,
+        goodsid: "",
         status: 1
       },
-      imgUrl: "",
+      timeValue: [],
       secondCateList: [],
-      specsAttrList: [],
+      goods: [],
+      rules:{
+        title:[
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
     ...mapGetters({
+      goodsList: "goods/goodsList",
       cateList: "cate/cateList",
       specsList: "spec/specsList"
     })
+  },
+  watch: {
+    timeValue() {
+      if (this.timeValue.length != 0) {
+        [this.form.begintime, this.form.endtime] = this.timeValue
+      }
+    }
   },
   methods: {
 
@@ -214,99 +159,88 @@ export default {
 
       this.form.second_cateid = ""
     },
-    changeSpecsId() {
-      this.specsAttrList = this.specsList.find(item => item.id == this.form.specsid).attrs;
-      this.form.specsattr = ""
+    changeSecondId() {
+      this.goods = this.goodsList.filter(item => {
+        if (item.second_cateid == this.form.second_cateid && item.first_cateid == this.form.first_cateid) {
+          return item
+        }
+      });
+      this.form.goodsid = ""
     },
     colse() {
       if (!this.info.isAdd) {
         this.empty();
       }
     },
-    createEditer() {
-      //创建编辑器
-            this.editor=new E("#editor");
-            this.editor.create()
-            //给富文本编辑器赋值
-            this.editor.txt.html(this.form.description)
-      // this.editer = new E("#editer")
-      // this.editer.create();
-      // this.editer.txt.html(this.form.description)
-    },
+
 
 
     ...mapActions({
+      seckListAction:"seckill/seckListAction",
       cateListAction: "cate/cateListAction",
       specsListAction: "spec/specsListAction",
       goodsListAction: "goods/goodsListAction"
     }),
     empty() {
       this.form = {
+        title: "",
+        begintime: "",
+        endtime: "",
         first_cateid: "",
         second_cateid: "",
-        goodsname: "",
-        price: "",
-        market_price: "",
-        img: "",
-        description: "",
-        specsid: "",
-        specsattr: [],
-        isnew: 1,
-        ishot: 1,
+        goodsid: "",
         status: 1
       };
-      this.imgUrl = ""
+      this.timeValue = []
+      this.secondCateList = []
+      this.goods = []
     },
-    upload(e) {
-      let file = e.target.files[0]
 
-      let imgArr = ['.jpg', '.jpeg', '.png', '.gif']
-
-      let extname = file.name.slice(file.name.lastIndexOf('.'));
-      console.log(extname);
-      if (!imgArr.includes(extname)) {
-        warningAlert('格式错误，请重新上传');
-        return;
-      }
-
-      this.imgUrl = URL.createObjectURL(file);
-      this.form.img = file
-    },
     // 添加
-    addGoods() {
-      this.form.description = this.editor.txt.html()
-      requestAddGoods(this.form).then(res => {
+    addSeckill() {
+      if(this.form.title == ''){
+        warningAlert('请填写活动名称')
+        return
+      }
+      requestAddSeck(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('添加成功');
           this.empty();
           this.info.isShow = false;
-          this.goodsListAction(true)
+          this.seckListAction()
         } else {
           warningAlert(res.data.msg)
         }
       })
-      // console.log(this.form);
     },
     // 获取一条数据
-    reqGoodsOne(id) {
-      requestGoodsListOne(id).then(res => {
+    reqSeckillOne(id) {
+      requestSeckListOne(id).then(res => {
         this.form = res.data.list
         this.form.id = id
-        this.imgUrl = this.$imgUrl + this.form.img
-        this.form.specsattr = this.form.specsattr.split(',')
         this.secondCateList = this.cateList.find(item => item.id == this.form.first_cateid).children
-        this.specsAttrList = this.specsList.find(item => item.id == this.form.specsid).attrs;
+        this.goods = this.goodsList.filter(item => {
+          if (item.second_cateid == this.form.second_cateid && item.first_cateid == this.form.first_cateid) {
+            return item
+          }
+        });
+        this.timeValue.push(this.form.begintime)
+        this.timeValue.push(this.form.endtime)
       })
+      
     },
     // 修改
-    updateGoods() {
-      this.form.description = this.editor.txt.html()
-      requestUpdateGoods(this.form).then(res => {
+    updateSeckill() {
+      if(this.form.title == ''){
+        warningAlert('请填写活动名称')
+        return
+      }
+      requestUpdateSeck(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('修改成功');
           this.empty();
           this.info.isShow = false;
-          this.goodsListAction(true)
+          this.seckListAction()
         } else {
           warningAlert(res.data.msg)
         }
@@ -319,6 +253,9 @@ export default {
     }
     if (this.specsList.length == 0) {
       this.specsListAction(true)
+    }
+    if (this.goodsList.length == 0) {
+      this.goodsListAction(true)
     }
 
   }

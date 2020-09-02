@@ -16,6 +16,7 @@ import banner from "./banner";
 import spec from "./spec";
 import goods from "./goods";
 import login from "./login";
+import seckill from "./seckill";
 Vue.use(vuex)
 
 export default new vuex.Store({
@@ -32,6 +33,7 @@ export default new vuex.Store({
     banner,
     spec,
     goods,
-    login
+    login,
+    seckill
   }
 })

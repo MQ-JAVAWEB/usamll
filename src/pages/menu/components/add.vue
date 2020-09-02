@@ -9,19 +9,24 @@
       <el-form
         :model="form"
         label-width="80px"
-        
+        :rules="rules"
       >
         <el-form-item label="菜单名称" 
-          
+          prop="title"
         >
           <el-input v-model="form.title"></el-input>
         </el-form-item>
-        <el-form-item label="上级名称">
+        <el-form-item label="上级名称" prop="pid"> 
           <el-select
             v-model="form.pid"
             placeholder="请选择上级菜单"
             @change="changePid"
           >
+            <el-option
+              value=""
+              label="--请选择--"
+              disabled
+            ></el-option>
             <el-option
               label="顶级菜单"
               :value="0"
@@ -131,7 +136,7 @@ export default {
   data() {
     return {
       form: {
-        pid: 0,
+        pid: '',
         title: '',
         icon: '',
         type: 1,
@@ -139,6 +144,14 @@ export default {
         status: 1
       },
       indexRouter:indexRouter,
+      rules:{
+        title:[
+          { required: true, message: '请输入菜单名称', trigger: 'blur' }
+        ],
+        pid:[
+          { required: true, message: '请选择上级名称', trigger: 'change' }
+        ]
+      }
     }
   },
   methods: {
@@ -162,6 +175,14 @@ export default {
     },
     // 添加菜单
     addMenu() {
+      if(this.form.title == ''){
+        warningAlert('请填写菜单名称')
+        return
+      }
+      if(this.form.pid == ''){
+        warningAlert('请选择上级名称')
+        return
+      } 
       requestAddMenu(this.form).then(res => {
         if(res.data.code==200){
           successAlert(res.data.msg);
@@ -188,6 +209,14 @@ export default {
     },
     // 修改菜单
     updateMenu(){
+      if(this.form.title == ''){
+        warningAlert('请填写菜单名称')
+        return
+      }
+      if(this.form.pid == ''){
+        warningAlert('请选择上级名称')
+        return
+      } 
       requestUpdateMenu(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('修改成功');

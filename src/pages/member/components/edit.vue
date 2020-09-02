@@ -9,15 +9,16 @@
       <el-form
         :model="form"
         label-width="80px"
+        :rules="rules"
       >
-        <el-form-item label="手机号">
+        <el-form-item label="手机号" prop="phone">
           <el-input v-model="form.phone"></el-input>
         </el-form-item>
-        <el-form-item label="昵称">
+        <el-form-item label="昵称" prop="nickname">
           <el-input v-model="form.nickname"></el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form.password"></el-input>
+          <el-input v-model="pwd"></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <el-switch
@@ -64,6 +65,15 @@ export default {
         phone:"",
         password:"",
         status: 1
+      },
+      pwd:"",
+      rules:{
+        nickname:[
+          { required: true, message: '请输入昵称', trigger: 'blur' }
+        ],
+        phone:[
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -86,18 +96,27 @@ export default {
         password:"",
         status: 1
       }
-      
+      this.pwd=""
     },
     
     // 获取一条数据
     reqMemberOne(uid) {
       requestMemberListOne(uid).then(res => {
         this.form = res.data.list;
-
+        
       })
     },
     // 更新
     updateMember() {
+      if(this.form.nickname == ''){
+        warningAlert('请填写昵称')
+        return
+      }
+      if(this.form.phone == ''){
+        warningAlert('请填写手机号')
+        return
+      }
+      this.form.password = this.pwd?this.form.password:this.pwd
       requestUpdateMember(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('修改成功')

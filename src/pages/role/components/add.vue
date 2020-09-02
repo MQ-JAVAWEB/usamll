@@ -5,12 +5,14 @@
       :visible.sync="info.isShow"
       width="50%"
       @closed="colse"
+      
     >
       <el-form
         :model="form"
         label-width="80px"
+        :rules="rules"
       >
-        <el-form-item label="角色名称">
+        <el-form-item label="角色名称" prop="rolename">
           <el-input v-model="form.rolename"></el-input>
         </el-form-item>
         <el-form-item label="角色权限">
@@ -72,6 +74,11 @@ export default {
         rolename: "",
         menus: "",
         status: 1
+      },
+      rules:{
+        rolename:[
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
+        ]
       }
 
 
@@ -100,6 +107,11 @@ export default {
     },
     // 添加角色
     addRole() {
+      if(this.form.rolename == ''){
+        warningAlert('请填写角色名称')
+        return
+      }
+      
       this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
       requestAddRole(this.form).then(res => {
         if (res.data.code === 200) {
@@ -122,6 +134,10 @@ export default {
     },
     // 更新
     updateRole() {
+      if(this.form.rolename == ''){
+        warningAlert('请填写角色名称')
+        return
+      }
       this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
       requestUpdateRole(this.form).then(res=>{
         if (res.data.code==200) {

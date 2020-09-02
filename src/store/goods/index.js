@@ -39,7 +39,7 @@ const actions = {
       context.commit('changeList', res.data.list)
     })
   },
-  getSpecsTotalAction(context) {
+  getGoodsTotalAction(context) {
     requestGoodsTotal().then(res => {
       context.commit('changeTotal', res.data.list[0].total)
     })

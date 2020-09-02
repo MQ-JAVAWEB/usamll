@@ -9,9 +9,10 @@
       <el-form
         :model="form"
         label-width="80px"
+        :rules="rules"
       >
 
-        <el-form-item label="一级分类">
+        <el-form-item label="一级分类" prop="first_cateid">
           <el-select
             v-model="form.first_cateid"
             @change="changeFirstId"
@@ -29,7 +30,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="二级分类">
+        <el-form-item label="二级分类" prop="second_cateid">
           <el-select
             v-model="form.second_cateid"
             placeholder="请选择所属角色"
@@ -47,7 +48,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品名称">
+        <el-form-item label="商品名称" prop="goodsname">
           <el-input v-model="form.goodsname"></el-input>
         </el-form-item>
         <el-form-item label="价格">
@@ -138,14 +139,13 @@
           </el-switch>
         </el-form-item>
         <el-form-item label="商品描述">
-          
-            <div
-              id="editor"
-              v-if="info.isShow"
-            >
 
-            </div>
-          
+          <div
+            id="editor"
+            v-if="info.isShow"
+          >
+
+          </div>
 
         </el-form-item>
 
@@ -199,6 +199,17 @@ export default {
       imgUrl: "",
       secondCateList: [],
       specsAttrList: [],
+      rules:{
+        goodsname:[
+          { required: true, message: '请输入商品名称', trigger: 'blur' }
+        ],
+        first_cateid:[
+          { required: true, message: '请选择一级分类', trigger: 'change' }
+        ],
+        second_cateid:[
+          { required: true, message: '请选择二级分类', trigger: 'change' }
+        ]
+      }
     }
   },
   computed: {
@@ -225,20 +236,20 @@ export default {
     },
     createEditer() {
       //创建编辑器
-            this.editor=new E("#editor");
-            this.editor.create()
-            //给富文本编辑器赋值
-            this.editor.txt.html(this.form.description)
-      // this.editer = new E("#editer")
-      // this.editer.create();
-      // this.editer.txt.html(this.form.description)
+      this.editor = new E("#editor");
+      this.editor.create()
+      //给富文本编辑器赋值
+      this.editor.txt.html(this.form.description)
+
     },
 
 
     ...mapActions({
       cateListAction: "cate/cateListAction",
       specsListAction: "spec/specsListAction",
-      goodsListAction: "goods/goodsListAction"
+      goodsListAction: "goods/goodsListAction",
+      getGoodsTotalAction:"goods/getGoodsTotalAction",
+      goodsPageActions:"goods/goodsPageActions"
     }),
     empty() {
       this.form = {
@@ -256,6 +267,7 @@ export default {
         status: 1
       };
       this.imgUrl = ""
+      
     },
     upload(e) {
       let file = e.target.files[0]
@@ -274,13 +286,26 @@ export default {
     },
     // 添加
     addGoods() {
+      if(this.form.first_cateid==''){
+        warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.second_cateid==''){
+        warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.goodsname==''){
+        warningAlert('请填写商品名称')
+        return
+      }
       this.form.description = this.editor.txt.html()
       requestAddGoods(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('添加成功');
           this.empty();
           this.info.isShow = false;
-          this.goodsListAction(true)
+          this.goodsPageActions(1)
+          this.getGoodsTotalAction()
         } else {
           warningAlert(res.data.msg)
         }
@@ -306,7 +331,8 @@ export default {
           successAlert('修改成功');
           this.empty();
           this.info.isShow = false;
-          this.goodsListAction(true)
+          this.goodsPageActions(1)
+          this.getGoodsTotalAction()
         } else {
           warningAlert(res.data.msg)
         }
@@ -314,6 +340,7 @@ export default {
     }
   },
   mounted() {
+    this.getGoodsTotalAction()
     if (this.cateList.length == 0) {
       this.cateListAction()
     }
