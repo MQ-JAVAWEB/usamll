@@ -53,7 +53,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="info.isShow = false">取 消</el-button>
+        <el-button @click="can">取 消</el-button>
         <el-button
           type="primary"
           @click="addCate"
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       form: {
+        pid:'',
         catename:"",
         img:"",
         status: 1
@@ -106,6 +107,7 @@ export default {
     }),
     empty(){
       this.form={
+        pid:'',
         catename:"",
         img:"",
         status: 1
@@ -136,7 +138,11 @@ export default {
       if(this.form.pid == ''){
         warningAlert('请选择上级分类')
         return
-      } 
+      }
+      if(this.form.pid!=0&&this.form.img == ''){
+        warningAlert('请上传图片')
+        return
+      }
       requestAddCate(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('添加成功');
@@ -155,6 +161,10 @@ export default {
         this.form.id = id
         this.imgUrl =this.$imgUrl +  this.form.img
       })
+    },
+    can(){
+      this.info.isShow = false;
+      this.empty();
     },
     // 修改
     updateCate(){

@@ -43,7 +43,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="can">取 消</el-button>
         <el-button
           type="primary"
           @click="addUser"
@@ -99,9 +99,7 @@ export default {
       userPageActions:"manage/userPageActions",
       getUserTotalAction:"manage/getUserTotalAction"
     }),
-    cancel() {
-      this.info.isShow = false
-    },
+    
     colse() {
       if (!this.info.isAdd) {
         this.empty();
@@ -144,6 +142,10 @@ export default {
         this.form = res.data.list;
         this.form.password = "";
       })
+    },
+    can(){
+      this.info.isShow = false;
+      this.empty();
     },
     // 更新
     updateUser() {

@@ -3,7 +3,7 @@
     <el-dialog
       :title="info.title"
       :visible.sync="info.isShow"
-      
+      @closed="close"
     >
       <el-form :model="form" label-width="80px" :rules="rules">
         
@@ -39,7 +39,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="info.isShow = false">取 消</el-button>
+        <el-button @click="can">取 消</el-button>
         <el-button
           type="primary"
           @click="addCate"
@@ -87,6 +87,15 @@ export default {
     ...mapActions({
        bannerListAction:"banner/bannerListAction"
     }),
+    close(){
+      if(!this.info.isAdd){
+        this.empty()
+      }
+    },
+    can(){
+      this.info.isShow = false;
+      this.empty();
+    },
     empty(){
       this.form={
         title:"",
@@ -116,6 +125,10 @@ export default {
         warningAlert('请填写轮播图标题')
         return
       }
+      if(!this.form.img){
+        warningAlert('请选择商品图片')
+        return
+      }
       requestAddBanner(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('添加成功');
@@ -139,6 +152,10 @@ export default {
     updateCate(){
       if(this.form.title == ''){
         warningAlert('请填写轮播图标题')
+        return
+      }
+      if(!this.form.img){
+        warningAlert('请选择商品图片')
         return
       }
       requestUpdateBanner(this.form).then(res=>{

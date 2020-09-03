@@ -25,7 +25,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="一级分类">
+        <el-form-item label="一级分类" prop="first_cateid">
           <el-select
             v-model="form.first_cateid"
             @change="changeFirstId"
@@ -43,7 +43,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="二级分类">
+        <el-form-item label="二级分类" prop="second_cateid">
           <el-select
             v-model="form.second_cateid"
             placeholder="请选择所属角色"
@@ -62,7 +62,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品">
+        <el-form-item label="商品" prop="goodsid">
           <el-select
             v-model="form.goodsid"
             placeholder="请选择所属角色"
@@ -93,7 +93,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="info.isShow = false">取 消</el-button>
+        <el-button @click="can">取 消</el-button>
         <el-button
           type="primary"
           @click="addSeckill"
@@ -134,6 +134,15 @@ export default {
       rules:{
         title:[
           { required: true, message: '请输入活动名称', trigger: 'blur' }
+        ],
+        first_cateid:[
+          { required: true, message: '请选择一级分类', trigger: 'change' }
+        ],
+        second_cateid:[
+          { required: true, message: '请选择二级分类', trigger: 'change' }
+        ],
+        goodsid:[
+          { required: true, message: '请选择商品', trigger: 'change' }
         ]
       }
     }
@@ -153,7 +162,10 @@ export default {
     }
   },
   methods: {
-
+    can(){
+      this.info.isShow = false;
+      this.empty();
+    },
     changeFirstId() {
       this.secondCateList = this.cateList.find(item => item.id == this.form.first_cateid).children
 
@@ -202,6 +214,18 @@ export default {
         warningAlert('请填写活动名称')
         return
       }
+      if(this.form.first_cateid == ''){
+        warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.second_cateid == ''){
+        warningAlert('请选择二级分类')
+        return
+      }
+      if(this.form.goodsid == ''){
+        warningAlert('请选择商品')
+        return
+      }
       requestAddSeck(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('添加成功');
@@ -233,6 +257,18 @@ export default {
     updateSeckill() {
       if(this.form.title == ''){
         warningAlert('请填写活动名称')
+        return
+      }
+      if(this.form.first_cateid == ''){
+        warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.second_cateid == ''){
+        warningAlert('请选择二级分类')
+        return
+      }
+      if(this.form.goodsid == ''){
+        warningAlert('请选择商品')
         return
       }
       requestUpdateSeck(this.form).then(res => {

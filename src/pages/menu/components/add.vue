@@ -150,6 +150,12 @@ export default {
         ],
         pid:[
           { required: true, message: '请选择上级名称', trigger: 'change' }
+        ],
+        icon:[
+          { required: true, message: '请选择菜单图标', trigger: 'change' }
+        ],
+        url:[
+          { required: true, message: '请选择菜单地址', trigger: 'change' }
         ]
       }
     }
@@ -161,6 +167,7 @@ export default {
     // 弹框消失
     cancel() {
       this.$emit('hide')
+      this.empty()
     },
     // 重置form
     empty(){
@@ -183,6 +190,10 @@ export default {
         warningAlert('请选择上级名称')
         return
       } 
+      if(this.form.icon == '' || this.form.url == ''){
+        warningAlert('请选择')
+        return
+      }
       requestAddMenu(this.form).then(res => {
         if(res.data.code==200){
           successAlert(res.data.msg);
@@ -206,6 +217,10 @@ export default {
      if(!this.info.isAdd){
        this.empty();
      }
+    },
+    can(){
+      this.info.isShow = false;
+      this.empty();
     },
     // 修改菜单
     updateMenu(){

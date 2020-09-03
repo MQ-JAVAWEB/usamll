@@ -51,10 +51,10 @@
         <el-form-item label="商品名称" prop="goodsname">
           <el-input v-model="form.goodsname"></el-input>
         </el-form-item>
-        <el-form-item label="价格">
+        <el-form-item label="价格" prop="price">
           <el-input v-model="form.price"></el-input>
         </el-form-item>
-        <el-form-item label="市场价格">
+        <el-form-item label="市场价格" prop="market_price">
           <el-input v-model="form.market_price"></el-input>
         </el-form-item>
         <el-form-item label="图片">
@@ -72,7 +72,7 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="商品规格">
+        <el-form-item label="商品规格" prop="specsid">
           <el-select
             v-model="form.specsid"
             placeholder="请选择所属角色"
@@ -91,7 +91,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品属性">
+        <el-form-item label="商品属性" prop="specsattr">
           <el-select
             v-model="form.specsattr"
             multiple
@@ -155,7 +155,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="info.isShow = false">取 消</el-button>
+        <el-button @click="can">取 消</el-button>
         <el-button
           type="primary"
           @click="addGoods"
@@ -208,6 +208,18 @@ export default {
         ],
         second_cateid:[
           { required: true, message: '请选择二级分类', trigger: 'change' }
+        ],
+        price:[
+          { required: true, message: '请输入价格', trigger: 'blur' }
+        ],
+        market_price:[
+          { required: true, message: '请输入市场价格', trigger: 'blur' }
+        ],
+        specsid:[
+          { required: true, message: '请选择商品规格', trigger: 'change' }
+        ],
+        specsattr:[
+          { required: true, message: '请选择商品属性', trigger: 'change' }
         ]
       }
     }
@@ -219,7 +231,10 @@ export default {
     })
   },
   methods: {
-
+    can(){
+      this.info.isShow = false;
+      this.empty();
+    },
     changeFirstId() {
       this.secondCateList = this.cateList.find(item => item.id == this.form.first_cateid).children
 
@@ -294,11 +309,35 @@ export default {
         warningAlert('请选择一级分类')
         return
       }
+      if(!this.form.img){
+        warningAlert('请选择商品图片')
+        return
+      }
       if(this.form.goodsname==''){
         warningAlert('请填写商品名称')
         return
       }
+      if(this.form.price==''){
+        warningAlert('请填写价格')
+        return
+      }
+      if(this.form.market_price==''){
+        warningAlert('请填写市场价格')
+        return
+      }
+      if(this.form.specsid==''){
+        warningAlert('请填写商品规格')
+        return
+      }
+      if(this.form.specsattr==''){
+        warningAlert('请填写商品属性')
+        return
+      }
       this.form.description = this.editor.txt.html()
+       if(this.form.description==''){
+        warningAlert('请填写商品描述')
+        return
+      }
       requestAddGoods(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('添加成功');
@@ -325,7 +364,43 @@ export default {
     },
     // 修改
     updateGoods() {
+      if(this.form.first_cateid==''){
+        warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.second_cateid==''){
+        warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.goodsname==''){
+        warningAlert('请填写商品名称')
+        return
+      }
+      if(this.form.price==''){
+        warningAlert('请填写价格')
+        return
+      }
+      if(this.form.market_price==''){
+        warningAlert('请填写市场价格')
+        return
+      }
+      if(!this.form.img){
+        warningAlert('请选择商品图片')
+        return
+      }
+      if(this.form.specsid==''){
+        warningAlert('请填写商品规格')
+        return
+      }
+      if(this.form.specsattr==''){
+        warningAlert('请填写商品属性')
+        return
+      }
       this.form.description = this.editor.txt.html()
+        if(this.form.description==''){
+        warningAlert('请填写商品描述')
+        return
+      }
       requestUpdateGoods(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('修改成功');

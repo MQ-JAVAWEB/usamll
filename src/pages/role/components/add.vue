@@ -85,12 +85,14 @@ export default {
     }
   },
   methods: {
+    
     ...mapActions({
       menuListAction: "menu/menuListAction",
       roleListAction: "role/roleListAction"
     }),
     cancel() {
       this.info.isShow = false
+      this.empty()
     },
     colse(){
       if(!this.info.isAdd){

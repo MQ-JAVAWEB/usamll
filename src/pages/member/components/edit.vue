@@ -34,7 +34,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="can">取 消</el-button>
         
         <el-button
           type="primary"
@@ -81,8 +81,9 @@ export default {
     ...mapActions({
       memberListAction:"member/memberListAction"
     }),
-    cancel() {
-      this.info.isShow = false
+    can(){
+      this.info.isShow = false;
+      this.empty();
     },
     colse() {
       if (!this.info.isAdd) {

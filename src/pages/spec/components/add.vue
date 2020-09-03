@@ -15,10 +15,10 @@
         <el-form-item label="规格名称" prop="specsname">
           <el-input v-model="form.specsname"></el-input>
         </el-form-item>
-        <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index">
+        <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index" prop="attrValues">
           <el-row>
             <el-col  :span="18">
-              <el-input v-model="item.value"></el-input>
+              <el-input v-model="item.value" prop="attrValues"></el-input>
             </el-col>
             <el-col  :span="4">
               <el-button type="primary" @click="pushAttr" v-if="index==0">新增规格属性</el-button>
@@ -80,7 +80,10 @@ export default {
       },
       rules:{
         specsname:[
-          { required: true, message: '请输入角色名称', trigger: 'blur' }
+          { required: true, message: '请输入规格名称', trigger: 'blur' }
+        ],
+        attrValues:[
+          { required: true, message: '请输入规格属性', trigger: 'blur' }
         ]
       }
 
@@ -88,6 +91,7 @@ export default {
     }
   },
   methods: {
+    
     pushAttr(){
       this.attrArr.push({value:""})
     },
@@ -100,6 +104,7 @@ export default {
     }),
     cancel() {
       this.info.isShow = false
+      this.empty()
     },
     colse() {
       if (!this.info.isAdd) {
@@ -121,6 +126,10 @@ export default {
         return
       }
       this.form.attrs = JSON.stringify(this.attrArr.map(item=>item.value))
+      if(!(this.attrArr.map(item=>item.value)).find(item=>item=="")){
+        warningAlert('存在未填写项')
+        return
+      }
       requestAddSpecs(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('添加成功')
