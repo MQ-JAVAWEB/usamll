@@ -18,7 +18,7 @@ export default {
     return {
       info:{
         isShow:false,
-        title:"添加轮播图",
+        title:"添加规格",
         isAdd:true
       }
     }
@@ -26,7 +26,7 @@ export default {
   methods: {
     add(){
       this.info = {
-        title:"添加轮播图",
+        title:"添加规格",
         isShow:true,
         isAdd:true
       }
@@ -34,7 +34,7 @@ export default {
     edit(id){
       this.info={
         isShow:true,
-        title:"修改轮播图",
+        title:"修改规格",
         isAdd:false
       }
       this.$refs.add.reqSpecsOne(id);

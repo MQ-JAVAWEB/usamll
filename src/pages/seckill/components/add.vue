@@ -287,12 +287,12 @@ export default {
     if (this.cateList.length == 0) {
       this.cateListAction()
     }
-    if (this.specsList.length == 0) {
+    
       this.specsListAction(true)
-    }
-    if (this.goodsList.length == 0) {
+   
+    
       this.goodsListAction(true)
-    }
+    
 
   }
 }

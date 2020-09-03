@@ -15,7 +15,7 @@
         <el-form-item label="规格名称" prop="specsname">
           <el-input v-model="form.specsname"></el-input>
         </el-form-item>
-        <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index"  prop="attrValues">
+        <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index" >
           <el-row>
             <el-col  :span="18">
               <el-input v-model="item.value"></el-input>
@@ -81,9 +81,6 @@ export default {
       rules:{
         specsname:[
           { required: true, message: '请输入规格名称', trigger: 'blur' }
-        ],
-        attrValues:[
-          { required: true, message: '请输入规格属性', trigger: 'blur' }
         ]
       }
 
