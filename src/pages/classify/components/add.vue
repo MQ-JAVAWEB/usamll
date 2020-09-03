@@ -9,7 +9,6 @@
         <el-form-item label="上级分类" prop="pid">
           <el-select
             v-model="form.pid"
-            placeholder="--请选择--"
           >
             <el-option
               label="顶级分类"
@@ -80,7 +79,7 @@ export default {
   data() {
     return {
       form: {
-        pid:'',
+        pid:0,
         catename:"",
         img:"",
         status: 1
@@ -107,7 +106,7 @@ export default {
     }),
     empty(){
       this.form={
-        pid:'',
+        pid:0,
         catename:"",
         img:"",
         status: 1
@@ -135,7 +134,7 @@ export default {
         warningAlert('请填写分类名称')
         return
       }
-      if(this.form.pid == ''){
+      if(this.cateList.id == 0){
         warningAlert('请选择上级分类')
         return
       }
@@ -172,7 +171,7 @@ export default {
         warningAlert('请填写分类名称')
         return
       }
-      if(this.form.pid == ''){
+      if(this.cateList.id == 0){
         warningAlert('请选择上级分类')
         return
       } 

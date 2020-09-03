@@ -19,14 +19,10 @@
         <el-form-item label="上级名称" prop="pid"> 
           <el-select
             v-model="form.pid"
-            placeholder="请选择上级菜单"
+            
             @change="changePid"
           >
-            <el-option
-              value=""
-              label="--请选择--"
-              disabled
-            ></el-option>
+          
             <el-option
               label="顶级菜单"
               :value="0"
@@ -136,7 +132,7 @@ export default {
   data() {
     return {
       form: {
-        pid: '',
+        pid: 0,
         title: '',
         icon: '',
         type: 1,
@@ -186,11 +182,12 @@ export default {
         warningAlert('请填写菜单名称')
         return
       }
-      if(this.form.pid == ''){
+      if(this.menuList.id == 0){
         warningAlert('请选择上级名称')
         return
       } 
-      if(this.form.icon == '' || this.form.url == ''){
+      
+      if(this.form.type==1?this.form.icon=="":this.form.url == ''){
         warningAlert('请选择')
         return
       }
@@ -228,10 +225,14 @@ export default {
         warningAlert('请填写菜单名称')
         return
       }
-      if(this.form.pid == ''){
+      if(this.menuList.id == 0){
         warningAlert('请选择上级名称')
         return
       } 
+      if(this.form.type==1?this.form.icon=="":this.form.url == ''){
+        warningAlert('请选择')
+        return
+      }
       requestUpdateMenu(this.form).then(res=>{
         if(res.data.code==200){
           successAlert('修改成功');

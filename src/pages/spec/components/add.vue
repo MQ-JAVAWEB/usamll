@@ -15,10 +15,10 @@
         <el-form-item label="规格名称" prop="specsname">
           <el-input v-model="form.specsname"></el-input>
         </el-form-item>
-        <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index" prop="attrValues">
+        <el-form-item label="规格属性" v-for="(item,index) in attrArr" :key="index"  prop="attrValues">
           <el-row>
             <el-col  :span="18">
-              <el-input v-model="item.value" prop="attrValues"></el-input>
+              <el-input v-model="item.value"></el-input>
             </el-col>
             <el-col  :span="4">
               <el-button type="primary" @click="pushAttr" v-if="index==0">新增规格属性</el-button>

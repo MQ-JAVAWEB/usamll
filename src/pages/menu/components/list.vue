@@ -46,7 +46,7 @@
       >
       <template slot-scope="scope">
         <el-button type="primary" @click="edit(scope.row.id)">编辑</el-button>
-        <v-del @confirm="del(scope.row.uid)">删除</v-del>
+        <v-del @confirm="del(scope.row.id)">删除</v-del>
       </template>
       </el-table-column>
     </el-table>

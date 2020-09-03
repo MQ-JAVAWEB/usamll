@@ -28,7 +28,7 @@ export default {
   methods: {
     add(){
       this.info = {
-        title:"添加轮播图",
+        title:"添加菜单",
         isShow:true,
         isAdd:true
       }
