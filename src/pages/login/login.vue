@@ -2,7 +2,7 @@
   <div class="warp">
     <div class="con">
       <h2>登录</h2>
-      <el-form :rules="rules" :model="user">
+      <el-form :rules="rules" :model="user" ref="form">
         <el-form-item prop="username">
           <el-input v-model="user.username" placeholder="请输入用户名" clearable></el-input>
         </el-form-item>
@@ -61,6 +61,7 @@ export default {
 
 
       requestLogin(this.user).then(res=>{
+        this.$refs.form.clearValidate()
         if(res.data.code==200){
           successAlert("登录成功")
           this.loginAction(res.data.list)

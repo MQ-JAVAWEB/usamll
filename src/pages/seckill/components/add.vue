@@ -4,11 +4,13 @@
       :title="info.title"
       :visible.sync="info.isShow"
       @closed="colse"
+      @opened="open"
     >
       <el-form
         :model="form"
         label-width="80px"
         :rules="rules"
+        ref="form"
       >
 
         <el-form-item label="活动名称" prop="title">
@@ -16,13 +18,16 @@
         </el-form-item>
         <el-form-item label="活动期限">
           <el-date-picker
-            v-model="timeValue"
-            type="datetimerange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="timestamp"
-          >
+              v-model="timeValue"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              @change="timeChange"
+              value-format="timestamp"
+              >
           </el-date-picker>
+          
         </el-form-item>
 
         <el-form-item label="一级分类" prop="first_cateid">
@@ -154,17 +159,16 @@ export default {
       specsList: "spec/specsList"
     })
   },
-  watch: {
-    timeValue() {
-      if (this.timeValue.length != 0) {
-        [this.form.begintime, this.form.endtime] = this.timeValue
-      }
-    }
-  },
   methods: {
+    timeChange(){
+      if(this.timeValue.length!=0){
+        [this.form.begintime,this.form.endtime] = this.timeValue
+      }
+    },
     can(){
       this.info.isShow = false;
       this.empty();
+      this.$refs.form.clearValidate()
     },
     changeFirstId() {
       this.secondCateList = this.cateList.find(item => item.id == this.form.first_cateid).children
@@ -183,6 +187,7 @@ export default {
       if (!this.info.isAdd) {
         this.empty();
       }
+      this.$refs.form.clearValidate()
     },
 
 
@@ -207,9 +212,12 @@ export default {
       this.secondCateList = []
       this.goods = []
     },
-
+open(){
+      this.$refs.form.clearValidate()
+    },
     // 添加
     addSeckill() {
+      this.$refs.form.clearValidate()
       if(this.form.title == ''){
         warningAlert('请填写活动名称')
         return
@@ -224,6 +232,10 @@ export default {
       }
       if(this.form.goodsid == ''){
         warningAlert('请选择商品')
+        return
+      }
+      if(this.form.begintime == ''){
+        warningAlert('请选择时间')
         return
       }
       requestAddSeck(this.form).then(res => {
@@ -250,17 +262,23 @@ export default {
         });
         this.timeValue.push(this.form.begintime)
         this.timeValue.push(this.form.endtime)
+        console.log(this.form);
       })
       
     },
     // 修改
     updateSeckill() {
+      this.$refs.form.clearValidate()
       if(this.form.title == ''){
         warningAlert('请填写活动名称')
         return
       }
       if(this.form.first_cateid == ''){
         warningAlert('请选择一级分类')
+        return
+      }
+      if(this.form.begintime == ''){
+        warningAlert('请选择时间')
         return
       }
       if(this.form.second_cateid == ''){
@@ -271,6 +289,8 @@ export default {
         warningAlert('请选择商品')
         return
       }
+      console.log(this.form.begintime);
+      console.log(this.form.endtime);
       requestUpdateSeck(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('修改成功');

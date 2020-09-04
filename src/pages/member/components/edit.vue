@@ -5,11 +5,13 @@
       :visible.sync="info.isShow"
       width="50%"
       @closed="colse"
+      @opened="open"
     >
       <el-form
         :model="form"
         label-width="80px"
         :rules="rules"
+        ref="form"
       >
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="form.phone"></el-input>
@@ -84,11 +86,13 @@ export default {
     can(){
       this.info.isShow = false;
       this.empty();
+      this.$refs.form.clearValidate()
     },
     colse() {
       if (!this.info.isAdd) {
         this.empty();
       }
+      this.$refs.form.clearValidate()
     },
     empty() {
       this.form = {
@@ -107,8 +111,12 @@ export default {
         
       })
     },
+    open(){
+      this.$refs.form.clearValidate()
+    },
     // 更新
     updateMember() {
+      this.$refs.form.clearValidate()
       if(this.form.nickname == ''){
         warningAlert('请填写昵称')
         return

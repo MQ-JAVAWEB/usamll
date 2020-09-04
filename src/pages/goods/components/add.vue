@@ -10,9 +10,10 @@
         :model="form"
         label-width="80px"
         :rules="rules"
+        ref="form"
       >
 
-        <el-form-item label="一级分类" prop="first_cateid">
+        <el-form-item label="一级分类" prop="first_cateid" >
           <el-select
             v-model="form.first_cateid"
             @change="changeFirstId"
@@ -248,6 +249,7 @@ export default {
       if (!this.info.isAdd) {
         this.empty();
       }
+      this.$refs.form.clearValidate()
     },
     createEditer() {
       //创建编辑器
@@ -255,7 +257,7 @@ export default {
       this.editor.create()
       //给富文本编辑器赋值
       this.editor.txt.html(this.form.description)
-
+        this.$refs.form.clearValidate()
     },
 
 
@@ -301,6 +303,7 @@ export default {
     },
     // 添加
     addGoods() {
+      this.$refs.form.clearValidate()
       if(this.form.first_cateid==''){
         warningAlert('请选择一级分类')
         return
@@ -364,6 +367,7 @@ export default {
     },
     // 修改
     updateGoods() {
+      this.$refs.form.clearValidate()
       if(this.form.first_cateid==''){
         warningAlert('请选择一级分类')
         return

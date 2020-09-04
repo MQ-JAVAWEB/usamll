@@ -4,8 +4,9 @@
       :title="info.title"
       :visible.sync="info.isShow"
       @closed="close"
+      @opened="open"
     >
-      <el-form :model="form" label-width="80px" :rules="rules">
+      <el-form :model="form" label-width="80px" :rules="rules" ref="form">
         
         <el-form-item label="标题" prop="title">
           <el-input v-model="form.title"></el-input>
@@ -90,11 +91,16 @@ export default {
     close(){
       if(!this.info.isAdd){
         this.empty()
+        
       }
+      this.$refs.form.clearValidate()
     },
     can(){
       this.info.isShow = false;
       this.empty();
+    },
+    open(){
+      this.$refs.form.clearValidate()
     },
     empty(){
       this.form={
@@ -121,6 +127,7 @@ export default {
     },
     // 添加
     addCate(){
+      this.$refs.form.clearValidate()
       if(this.form.title == ''){
         warningAlert('请填写轮播图标题')
         return
@@ -150,6 +157,7 @@ export default {
     },
     // 修改
     updateCate(){
+      this.$refs.form.clearValidate()
       if(this.form.title == ''){
         warningAlert('请填写轮播图标题')
         return

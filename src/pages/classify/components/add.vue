@@ -3,9 +3,10 @@
     <el-dialog
       :title="info.title"
       :visible.sync="info.isShow"
-      
+      @closed="close"
+      @opened="open"
     >
-      <el-form :model="form" label-width="80px" :rules="rules">
+      <el-form :model="form" label-width="80px" :rules="rules" ref="form">
         <el-form-item label="上级分类" prop="pid">
           <el-select
             v-model="form.pid"
@@ -104,6 +105,13 @@ export default {
     ...mapActions({
        cateListAction:"cate/cateListAction"
     }),
+    close(){
+      if(!this.info.isAdd){
+        this.empty()
+        
+      }
+      this.$refs.form.clearValidate()
+    },
     empty(){
       this.form={
         pid:0,
@@ -130,6 +138,7 @@ export default {
     },
     // 添加
     addCate(){
+      this.$refs.form.clearValidate()
       if(this.form.catename == ''){
         warningAlert('请填写分类名称')
         return
@@ -164,9 +173,14 @@ export default {
     can(){
       this.info.isShow = false;
       this.empty();
+      this.$refs.form.clearValidate()
+    },
+    open(){
+      this.$refs.form.clearValidate()
     },
     // 修改
     updateCate(){
+      this.$refs.form.clearValidate()
       if(this.form.catename == ''){
         warningAlert('请填写分类名称')
         return

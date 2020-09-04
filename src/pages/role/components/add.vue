@@ -5,12 +5,13 @@
       :visible.sync="info.isShow"
       width="50%"
       @closed="colse"
-      
-    >
+      @opened="open"
+    > 
       <el-form
         :model="form"
         label-width="80px"
         :rules="rules"
+        ref="form"
       >
         <el-form-item label="角色名称" prop="rolename">
           <el-input v-model="form.rolename"></el-input>
@@ -93,11 +94,16 @@ export default {
     cancel() {
       this.info.isShow = false
       this.empty()
+      this.$refs.form.clearValidate()
     },
     colse(){
       if(!this.info.isAdd){
         this.empty();
       }
+      this.$refs.form.clearValidate()
+    },
+    open(){
+      this.$refs.form.clearValidate()
     },
     empty() {
       this.form = {
@@ -109,6 +115,7 @@ export default {
     },
     // 添加角色
     addRole() {
+      this.$refs.form.clearValidate()
       if(this.form.rolename == ''){
         warningAlert('请填写角色名称')
         return
@@ -136,6 +143,7 @@ export default {
     },
     // 更新
     updateRole() {
+      this.$refs.form.clearValidate()
       if(this.form.rolename == ''){
         warningAlert('请填写角色名称')
         return

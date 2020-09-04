@@ -5,11 +5,13 @@
       :visible.sync="info.isShow"
       width="50%"
       @closed="colse"
+      @opened="open"
     >
       <el-form
         :model="form"
         label-width="80px"
         :rules="rules"
+        ref="form"
       >
         
         <el-form-item label="规格名称" prop="specsname">
@@ -102,11 +104,13 @@ export default {
     cancel() {
       this.info.isShow = false
       this.empty()
+      this.$refs.form.clearValidate()
     },
     colse() {
       if (!this.info.isAdd) {
         this.empty();
       }
+      this.$refs.form.clearValidate()
     },
     empty() {
       this.form = {
@@ -118,6 +122,7 @@ export default {
     },
     // 添加
     addSpecs() {
+      this.$refs.form.clearValidate()
       if(this.form.specsname == ''){
         warningAlert('请填写规格名称')
         return
@@ -150,8 +155,12 @@ export default {
         
       })
     },
+    open(){
+      this.$refs.form.clearValidate()
+    },
     // 更新
     updateSpecs() {
+      this.$refs.form.clearValidate()
       this.form.attrs = JSON.stringify(this.attrArr.map(item=>item.value))
       requestUpdateSpecs(this.form).then(res => {
         if (res.data.code == 200) {

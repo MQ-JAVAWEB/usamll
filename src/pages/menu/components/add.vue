@@ -5,11 +5,13 @@
       :visible.sync="info.isShow"
       width="50%"
       @closed='close'
+      @opened="open"
     >
       <el-form
         :model="form"
         label-width="80px"
         :rules="rules"
+        ref="form"
       >
         <el-form-item label="菜单名称" 
           prop="title"
@@ -160,6 +162,9 @@ export default {
     ...mapActions({
       menuListAction:"menu/menuListAction"
     }),
+    open(){
+      this.$refs.form.clearValidate()
+    },
     // 弹框消失
     cancel() {
       this.$emit('hide')
@@ -178,6 +183,7 @@ export default {
     },
     // 添加菜单
     addMenu() {
+      this.$refs.form.clearValidate()
       if(this.form.title == ''){
         warningAlert('请填写菜单名称')
         return
@@ -214,13 +220,16 @@ export default {
      if(!this.info.isAdd){
        this.empty();
      }
+     this.$refs.form.clearValidate()
     },
     can(){
       this.info.isShow = false;
       this.empty();
+      this.$refs.form.clearValidate()
     },
     // 修改菜单
     updateMenu(){
+      this.$refs.form.clearValidate()
       if(this.form.title == ''){
         warningAlert('请填写菜单名称')
         return
