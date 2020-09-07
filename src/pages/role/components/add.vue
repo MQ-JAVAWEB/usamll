@@ -120,7 +120,10 @@ export default {
         warningAlert('请填写角色名称')
         return
       }
-      
+      if(this.form.menus == ""){
+        warningAlert("请添加权限")
+        return
+      }
       this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
       requestAddRole(this.form).then(res => {
         if (res.data.code === 200) {
@@ -146,6 +149,10 @@ export default {
       this.$refs.form.clearValidate()
       if(this.form.rolename == ''){
         warningAlert('请填写角色名称')
+        return
+      }
+      if(this.form.menus == ""){
+        warningAlert("请添加权限")
         return
       }
       this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
