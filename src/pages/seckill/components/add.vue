@@ -262,7 +262,6 @@ open(){
         });
         this.timeValue.push(this.form.begintime)
         this.timeValue.push(this.form.endtime)
-        console.log(this.form);
       })
       
     },
@@ -289,8 +288,6 @@ open(){
         warningAlert('请选择商品')
         return
       }
-      console.log(this.form.begintime);
-      console.log(this.form.endtime);
       requestUpdateSeck(this.form).then(res => {
         if (res.data.code == 200) {
           successAlert('修改成功');

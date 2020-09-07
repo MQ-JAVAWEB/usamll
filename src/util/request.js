@@ -11,7 +11,6 @@ axios.interceptors.request.use(config=>{
     return config
   }
   config.headers.authorization = store.state.login.loginInfo.token
-  console.log(store);
   return config
 })
 

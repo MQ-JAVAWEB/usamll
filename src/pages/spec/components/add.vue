@@ -128,7 +128,7 @@ export default {
         return
       }
       this.form.attrs = JSON.stringify(this.attrArr.map(item=>item.value))
-      if(!(this.attrArr.map(item=>item.value)).find(item=>item=="")){
+      if(!(this.attrArr.map(item=>item.value)).find(item=>item!="")){
         warningAlert('存在未填写项')
         return
       }
